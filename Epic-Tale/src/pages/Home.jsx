@@ -6,7 +6,7 @@ export default function Home() {
     const [media, setMedia] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [errorMessage, setErrorMessage] = useState('');
-
+    // .
     useEffect(() => {
         async function getMedia() {
             setIsLoading(true);
@@ -36,7 +36,7 @@ export default function Home() {
             <div className="list-container">
                 {isLoading && <p>Loading media...</p>}
                 {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
-                
+
                 {!isLoading && !errorMessage && media.length === 0 && (
                     <p>No media found.</p>
                 )}
