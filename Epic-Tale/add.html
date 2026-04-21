@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Epic Tale - Add Media</title>
+
+</head>
+
+<body>
+  <div id="app">
+    <header>
+      <div class="logo"><a href="/" style="color: inherit; text-decoration: none;"><img src="" alt="Logo Placeholder"
+            style="height: 40px; display: block; border: 1px solid rgba(255,255,255,0.2);"></a></div>
+      <div class="search-container">
+        <input type="text" class="search-bar" placeholder="search">
+      </div>
+      <div class="header-actions">
+        <a href="/add.html">
+          <button class="btn-nav">ADD</button>
+        </a>
+        <a href="/">
+          <button class="btn-icon">
+            <img src="" alt="Home Placeholder"
+              style="width: 24px; height: 24px; display: block; border: 1px solid rgba(255,255,255,0.2);">
+          </button>
+        </a>
+      </div>
+    </header>
+
+    <main>
+      <div class="detail-container">
+        <div class="detail-top">
+          <div class="cover-photo-container">
+            <div class="placeholder-cover">
+              <h2>+</h2>
+              <div>Add Placeholder</div>
+            </div>
+          </div>
+          <div class="detail-info">
+            <div class="input-group">
+              <input type="text" id="input-name" class="input-text" placeholder="Name....">
+            </div>
+            <div class="input-group">
+              <textarea id="input-desc" class="input-textarea" placeholder="Description..."></textarea>
+            </div>
+            <div class="input-group">
+              <input type="text" id="input-creator" class="input-text" placeholder="Creator(s)...">
+            </div>
+            <div class="input-group">
+              <select id="input-type" class="input-text" style="background:#EBCFD3;">
+                <option value="1">Movie</option>
+                <option value="2">Book</option>
+                <option value="3">Video Game</option>
+              </select>
+            </div>
+
+            <button id="btn-submit" class="btn-filter"
+              style="margin-top: 1rem; width: 100%; border: 2px solid var(--text-dark);">Create Media</button>
+          </div>
+        </div>
+
+        <div class="related-section">
+          <h2>Related Media</h2>
+          <div class="related-scroll">
+            <div class="related-card" style="justify-content: center; cursor: pointer;">
+              <h2 style="font-size: 3rem; margin-bottom: 0.5rem;">+</h2>
+              <div>Add Relationship</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+
+    <footer>
+      Copyright The Benchwarmers 2026.
+    </footer>
+  </div>
+  <script type="module" src="/src/add.js"></script>
+</body>
+
+</html>
