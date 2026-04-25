@@ -85,6 +85,31 @@ export default function Home() {
         clearSelection();
     }
 
+    async function handleDeleteRelationship(fromMediaId, fromMediaName, toMediaId, toMediaName) {
+        const confirmed = window.confirm(
+            `Are you sure you want to delete the relationship between ${fromMediaName} and ${toMediaName}?`
+        );
+
+        if (!confirmed) {
+            return;
+        }
+
+        const { error } = await supabase
+            .from('relationships')
+            .delete()
+            .or(
+                `and(media_id_1.eq.${fromMediaId},media_id_2.eq.${toMediaId}),and(media_id_1.eq.${toMediaId},media_id_2.eq.${fromMediaId})`
+            );
+
+        if (error) {
+            console.error('Delete relationship error:', error.message);
+            return;
+        }
+
+        await loadAllRelationships(media);
+        clearSelection();
+    }
+
     return (
         <>
             <div className="list-header">
@@ -119,7 +144,12 @@ export default function Home() {
                                 </Link>
                             </div>
                             {relationships.length > 0 && (
-                                <RelationshipDisplay relationships={relationships} />
+                                <RelationshipDisplay
+                                    parentMediaId={item.id}
+                                    parentMediaName={item.name}
+                                    relationships={relationships}
+                                    onDeleteRelationship={handleDeleteRelationship}
+                                />
                             )}
                         </div>
                     );

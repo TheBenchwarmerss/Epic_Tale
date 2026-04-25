@@ -54,7 +54,11 @@ export default function MediaDetail() {
                         };
                     });
                     setRelationships(rels);
+                } else {
+                    setRelationships([]);
                 }
+            } else if (relError) {
+                setRelationships([]);
             }
 
             setIsLoading(false);
@@ -63,7 +67,60 @@ export default function MediaDetail() {
         getMediaDetails();
     }, [id]);
 
-if (isLoading) {
+    async function handleDeleteRelationship(fromMediaId, fromMediaName, toMediaId, toMediaName) {
+        const confirmed = window.confirm(
+            `Are you sure you want to delete the relationship between ${fromMediaName} and ${toMediaName}?`
+        );
+
+        if (!confirmed) {
+            return;
+        }
+
+        const { error } = await supabase
+            .from('relationships')
+            .delete()
+            .or(
+                `and(media_id_1.eq.${fromMediaId},media_id_2.eq.${toMediaId}),and(media_id_1.eq.${toMediaId},media_id_2.eq.${fromMediaId})`
+            );
+
+        if (error) {
+            console.error('Delete relationship error:', error.message);
+            return;
+        }
+
+        // reload relationships after deletion
+        const { data: relData, error: relError } = await supabase
+            .from('relationships')
+            .select('media_id_2, level')
+            .eq('media_id_1', id);
+
+        if (!relError && relData) {
+            const relatedIds = relData.map((r) => r.media_id_2);
+            if (relatedIds.length > 0) {
+                const { data: relatedMedia } = await supabase
+                    .from('media')
+                    .select('id, name, types(type)')
+                    .in('id', relatedIds);
+
+                const rels = relData.map((rel) => {
+                    const media = relatedMedia?.find((m) => m.id === rel.media_id_2);
+                    return {
+                        mediaId: rel.media_id_2,
+                        level: rel.level,
+                        name: media?.name,
+                        types: media?.types,
+                    };
+                });
+                setRelationships(rels);
+            } else {
+                setRelationships([]);
+            }
+        } else {
+            setRelationships([]);
+        }
+    }
+
+    if (isLoading) {
         return <div className="detail-container"><p>Loading...</p></div>;
     }
 
@@ -93,7 +150,12 @@ if (isLoading) {
             </div>
 
             {relationships.length > 0 && (
-                <RelationshipDisplay relationships={relationships} />
+                <RelationshipDisplay
+                    parentMediaId={mediaDetails.id}
+                    parentMediaName={mediaDetails.name}
+                    relationships={relationships}
+                    onDeleteRelationship={handleDeleteRelationship}
+                />
             )}
         </div>
     );

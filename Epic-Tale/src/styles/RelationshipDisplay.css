@@ -60,11 +60,10 @@
 .relationship-item {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
   padding: 0.75rem 1rem;
   background-color: rgba(255, 255, 255, 0.5);
   border-radius: var(--radius-md);
-  text-decoration: none;
   color: var(--text-dark);
   transition: all 0.2s ease;
   border-left: 3px solid #4CAF50;
@@ -74,6 +73,30 @@
   background-color: rgba(255, 255, 255, 0.8);
   transform: translateX(4px);
   box-shadow: var(--shadow-soft);
+}
+
+.relationship-link {
+  display: flex;
+  flex: 1;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: inherit;
+  align-items: center;
+}
+
+.relationship-delete {
+  background-color: #e53e3e;
+  border: none;
+  color: white;
+  padding: 0.45rem 0.85rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: background-color 0.2s ease;
+}
+
+.relationship-delete:hover {
+  background-color: #c53030;
 }
 
 .rel-name {
