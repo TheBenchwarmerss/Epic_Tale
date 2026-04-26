@@ -7,12 +7,12 @@ export default function RelationshipCheckbox({ mediaId }) {
   const isSelected = selectedMediaIds.includes(mediaId);
 
   return (
-    <button
-      className={`relationship-checkbox ${isSelected ? 'selected' : ''}`}
-      onClick={() => toggleMediaSelection(mediaId)}
+    <input 
+      type="checkbox" 
+      className="toggle toggle-primary"
+      checked={isSelected}
+      onChange={() => toggleMediaSelection(mediaId)}
       title={isSelected ? 'Deselect' : 'Select'}
-    >
-      {isSelected && <span className="checkmark">✓</span>}
-    </button>
+    />
   );
 }

@@ -73,6 +73,12 @@ export default function AddMedia() {
     }
 
     return (
+        <div className="max-w-5xl mx-auto py-4">
+            <form onSubmit={handleSubmit} className="card md:card-side bg-base-200 shadow-xl overflow-hidden">
+                <figure className="w-full md:w-1/3 bg-base-300 flex items-center justify-center p-16 md:p-0 min-h-[350px] cursor-pointer hover:bg-base-300/80 transition-colors border-b md:border-b-0 md:border-r border-base-content/10">
+                    <div className="text-center opacity-50 flex flex-col items-center gap-2">
+                        <span className="text-6xl font-light">+</span>
+                        <span className="font-medium tracking-wide uppercase text-sm">Add Cover Photo</span>
         <div className="detail-container">
             <form onSubmit={handleSubmit}>
                 <div className="detail-top">
@@ -90,39 +96,70 @@ export default function AddMedia() {
                             </div>
                         )}
                     </div>
-                    <div className="detail-info">
-                        <div className="input-group">
-                            <input
-                                name="name"
-                                type="text"
-                                className="input-text"
-                                placeholder="Name..."
-                                value={form.name}
-                                onChange={handleChange}
-                                required
-                            />
+                </figure>
+                <div className="card-body md:w-2/3 p-6 md:p-8">
+                    <h2 className="card-title text-2xl mb-6 font-bold">Add New Media</h2>
+                    
+                    <div className="form-control w-full mb-4">
+                        <input
+                            name="name"
+                            type="text"
+                            className="input input-bordered w-full bg-base-100 focus:input-primary"
+                            placeholder="Name..."
+                            value={form.name}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                    
+                    <div className="form-control w-full mb-4">
+                        <textarea
+                            name="description"
+                            className="textarea textarea-bordered w-full bg-base-100 focus:textarea-primary min-h-[120px]"
+                            placeholder="Description..."
+                            value={form.description}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                    
+                    <div className="form-control w-full mb-4">
+                        <input
+                            name="author"
+                            type="text"
+                            className="input input-bordered w-full bg-base-100 focus:input-primary"
+                            placeholder="Author / Creator..."
+                            value={form.author}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                    
+                    <div className="form-control w-full mb-6">
+                        <select
+                            name="type_id"
+                            className="select select-bordered w-full bg-base-100 focus:select-primary"
+                            value={form.type_id}
+                            onChange={handleChange}
+                            required
+                        >
+                            <option value="" disabled>Select a type...</option>
+                            {types.map((t) => (
+                                <option key={t.id} value={t.id}>{t.type}</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {errorMessage && (
+                        <div className="alert alert-error shadow-sm mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span>{errorMessage}</span>
                         </div>
-                        <div className="input-group">
-                            <textarea
-                                name="description"
-                                className="input-textarea"
-                                placeholder="Description..."
-                                value={form.description}
-                                onChange={handleChange}
-                                required
-                            />
-                        </div>
-                        <div className="input-group">
-                            <input
-                                name="author"
-                                type="text"
-                                className="input-text"
-                                placeholder="Author / Creator..."
-                                value={form.author}
-                                onChange={handleChange}
-                                required
-                            />
-                        </div>
+                    )}
+                    {successMessage && (
+                        <div className="alert alert-success shadow-sm mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span>{successMessage}</span>
                         <div className="input-group">
                             <input
                                 name="image_url"
@@ -148,17 +185,19 @@ export default function AddMedia() {
                                 ))}
                             </select>
                         </div>
+                    )}
 
-                        {errorMessage && <p style={{ color: '#b00020' }}>{errorMessage}</p>}
-                        {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
-
+                    <div className="card-actions justify-end mt-auto pt-4">
                         <button 
                             type="submit" 
                             disabled={isSubmitting} 
-                            className="btn-filter"
-                            style={{ marginTop: '1rem', width: '100%', border: '2px solid var(--text-dark)' }}
+                            className="btn btn-primary w-full sm:w-auto px-8"
                         >
-                            {isSubmitting ? 'Submitting...' : 'Create Media'}
+                            {isSubmitting ? (
+                                <><span className="loading loading-spinner loading-sm"></span> Submitting...</>
+                            ) : (
+                                'Create Media'
+                            )}
                         </button>
                     </div>
                 </div>

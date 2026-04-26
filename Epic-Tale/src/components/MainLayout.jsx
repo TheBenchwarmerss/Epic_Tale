@@ -1,54 +1,85 @@
-import { Outlet, Link } from 'react-router-dom';
-import { useContext } from 'react';
+import { Outlet, Link, useSearchParams, useLocation, useNavigate } from 'react-router-dom';
+import { useContext, useState, useEffect } from 'react';
 import { RelationshipContext } from '../contexts/RelationshipContext';
 
 export default function MainLayout() {
   const { relationshipMode, toggleRelationshipMode } = useContext(RelationshipContext);
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'epic-dark');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const currentQuery = searchParams.get('q') || '';
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(theme === 'epic-dark' ? 'epic-light' : 'epic-dark');
+  };
+
+  const handleSearchChange = (e) => {
+    const q = e.target.value;
+    if (location.pathname !== '/') {
+      navigate(`/?q=${encodeURIComponent(q)}`);
+    } else {
+      setSearchParams(q ? { q } : {}, { replace: true });
+    }
+  };
 
   return (
-    <div id="app">
-      <header>
-        <div className="logo">
-          <Link to="/" style={{ color: 'inherit', textDecoration: 'none' }}>
-            <img 
-              src="" 
-              alt="Benchwarmers Logo" 
-              style={{ height: '40px', display: 'block', border: '1px solid rgba(255,255,255,0.2)' }} 
-            />
+    <div className="min-h-screen flex flex-col bg-base-100 text-base-content font-main transition-colors duration-200">
+      <header className="navbar bg-neutral text-neutral-content shadow-lg px-4 lg:px-8 z-50 sticky top-0 transition-colors duration-200">
+        <div className="flex-1">
+          <Link to="/" className="btn btn-ghost normal-case text-2xl font-logo tracking-wide px-2">
+            Benchwarmers
           </Link>
         </div>
-        <div className="search-container">
-          <input type="text" className="search-bar" placeholder="search" />
-        </div>
-        <div className="header-actions">
+        <div className="flex-none gap-2 sm:gap-4">
+          <label className="swap swap-rotate btn btn-sm lg:btn-md btn-ghost btn-circle">
+            <input type="checkbox" checked={theme === 'epic-dark'} onChange={toggleTheme} />
+            {/* sun icon for light mode (shows when not checked/dark) */}
+            <svg className="swap-on fill-current w-5 h-5 lg:w-6 lg:h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5.64,17l-.71.71a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71A1,1,0,0,0,5.64,17ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm7-7a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41l-.71-.71A1,1,0,0,0,4.93,6.34Zm12,.29a1,1,0,0,0,.7-.29l.71-.71a1,1,0,1,0-1.41-1.41L17,5.64a1,1,0,0,0,0,1.41A1,1,0,0,0,17.66,7.34ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-9,8a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19ZM18.36,17A1,1,0,0,0,17,18.36l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM12,6.5A5.5,5.5,0,1,0,17.5,12,5.51,5.51,0,0,0,12,6.5Zm0,9A3.5,3.5,0,1,1,15.5,12,3.5,3.5,0,0,1,12,15.5Z"/></svg>
+            {/* moon icon for dark mode (shows when checked/dark) */}
+            <svg className="swap-off fill-current w-5 h-5 lg:w-6 lg:h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/></svg>
+          </label>
+          <div className="form-control hidden md:block">
+            <input 
+              type="text" 
+              placeholder="Search..." 
+              value={currentQuery}
+              onChange={handleSearchChange}
+              className="input input-bordered input-sm rounded-full bg-base-200 text-base-content focus:bg-base-100 focus:ring-2 focus:ring-primary w-48 lg:w-64 transition-colors duration-200" 
+            />
+          </div>
           <button 
-            className={`btn-nav ${relationshipMode ? 'active' : ''}`}
+            className={`btn btn-sm lg:btn-md ${relationshipMode ? 'btn-primary shadow-lg shadow-primary/50' : 'btn-ghost'}`}
             onClick={toggleRelationshipMode}
             title={relationshipMode ? 'Exit relationship mode' : 'Create relationships'}
           >
             RELATE +
           </button>
-          <Link to="/add">
-            <button className="btn-nav">ADD +</button>
+          <Link to="/add" className="btn btn-sm lg:btn-md btn-ghost">
+            ADD +
           </Link>
-          <Link to="/">
-            <button className="btn-icon">
-              <img 
-                src="" 
-                alt="Home" 
-                style={{ width: '24px', height: '24px', display: 'block', border: '1px solid rgba(255,255,255,0.2)' }} 
-              />
-            </button>
+          <Link to="/" className="btn btn-square btn-ghost btn-sm lg:btn-md">
+             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 lg:h-6 lg:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
           </Link>
         </div>
       </header>
 
-      <main>
+      <main className="flex-1 p-4 lg:p-8 w-full max-w-5xl mx-auto">
         <Outlet />
       </main>
 
-      <footer>
-        Copyright The Benchwarmers 2026.
+      <footer className="footer footer-center p-4 bg-neutral text-neutral-content/60 mt-auto">
+        <aside>
+          <p>Copyright © 2026 - The Benchwarmers</p>
+        </aside>
       </footer>
     </div>
   );
