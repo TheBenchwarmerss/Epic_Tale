@@ -19,7 +19,7 @@ export default function MediaDetail() {
             // Get media details
             const { data: mediaData, error: mediaError } = await supabase
                 .from('media')
-                .select('id, name, description, Creators(creator), types(type)')
+                .select('id, name, description, image_url, Creators(creator), types(type)')
                 .eq('id', id)
                 .single();
 
@@ -184,6 +184,27 @@ export default function MediaDetail() {
                            Delete Item
                         </button>
                     </div>
+        <div className="detail-container">
+            <div className="detail-top">
+                <div className="cover-photo-container">
+                    {mediaDetails.image_url ? (
+                        <img 
+                            src={mediaDetails.image_url} 
+                            alt={mediaDetails.name} 
+                            style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} 
+                        />
+                    ) : (
+                        <div className="placeholder-cover">
+                            <h2>?</h2>
+                            <div>Cover Pending</div>
+                        </div>
+                    )}
+                </div>
+                <div className="detail-info">
+                    <h1>{mediaDetails.name}</h1>
+                    <p className="series">Type: {mediaDetails.types?.type}</p>
+                    <p className="series">Creator: {mediaDetails.Creators?.creator}</p>
+                    <p>{mediaDetails.description}</p>
                 </div>
             </div>
 

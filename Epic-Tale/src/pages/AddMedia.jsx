@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../../utils/supabase'
 
 export default function AddMedia() {
-    const [form, setForm] = useState({ name: '', description: '', author: '', type_id: '' })
+    const [form, setForm] = useState({ name: '', description: '', author: '', type_id: '', image_url: '' })
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [successMessage, setSuccessMessage] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
@@ -61,13 +61,13 @@ export default function AddMedia() {
 
         const { error: mediaError } = await supabase
             .from('media')
-            .insert([{ name: form.name, description: form.description, creator_id: authorId, type_id: form.type_id }])
+            .insert([{ name: form.name, description: form.description, creator_id: authorId, type_id: form.type_id, image_url: form.image_url }])
 
         if (mediaError) {
             setErrorMessage(mediaError.message)
         } else {
             setSuccessMessage('Media added successfully!')
-            setForm({ name: '', description: '', author: '', type_id: '' })
+            setForm({ name: '', description: '', author: '', type_id: '', image_url: '' })
         }
         setIsSubmitting(false)
     }
@@ -79,6 +79,22 @@ export default function AddMedia() {
                     <div className="text-center opacity-50 flex flex-col items-center gap-2">
                         <span className="text-6xl font-light">+</span>
                         <span className="font-medium tracking-wide uppercase text-sm">Add Cover Photo</span>
+        <div className="detail-container">
+            <form onSubmit={handleSubmit}>
+                <div className="detail-top">
+                    <div className="cover-photo-container">
+                        {form.image_url ? (
+                            <img 
+                                src={form.image_url} 
+                                alt="Cover preview" 
+                                style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} 
+                            />
+                        ) : (
+                            <div className="placeholder-cover">
+                                <h2>+</h2>
+                                <div>Add Cover Photo</div>
+                            </div>
+                        )}
                     </div>
                 </figure>
                 <div className="card-body md:w-2/3 p-6 md:p-8">
@@ -144,6 +160,30 @@ export default function AddMedia() {
                         <div className="alert alert-success shadow-sm mb-4">
                             <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                             <span>{successMessage}</span>
+                        <div className="input-group">
+                            <input
+                                name="image_url"
+                                type="text"
+                                className="input-text"
+                                placeholder="Image URL..."
+                                value={form.image_url}
+                                onChange={handleChange}
+                            />
+                        </div>
+                        <div className="input-group">
+                            <select
+                                name="type_id"
+                                className="input-text"
+                                style={{ background: 'var(--bg-card)' }}
+                                value={form.type_id}
+                                onChange={handleChange}
+                                required
+                            >
+                                <option value="">Select a type...</option>
+                                {types.map((t) => (
+                                    <option key={t.id} value={t.id}>{t.type}</option>
+                                ))}
+                            </select>
                         </div>
                     )}
 

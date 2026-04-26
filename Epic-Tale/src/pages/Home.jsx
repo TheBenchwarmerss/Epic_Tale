@@ -13,6 +13,7 @@ export default function Home() {
     const [mediaWithRelationships, setMediaWithRelationships] = useState({});
     const [showModal, setShowModal] = useState(false);
     const [selectedPair, setSelectedPair] = useState(null);
+    const [searchQuery, setSearchQuery] = useState('');
 
     const { selectedMediaIds, clearSelection, relationshipMode } = useContext(RelationshipContext);
 
@@ -22,7 +23,7 @@ export default function Home() {
             setErrorMessage('');
             const { data, error } = await supabase
                 .from('media')
-                .select('id, name, description, Creators(creator), types(type)')
+                .select('id, name, description, image_url, Creators(creator), types(type)')
                 .order('id', { ascending: true });
 
             if (error) {
@@ -109,6 +110,17 @@ export default function Home() {
         clearSelection();
     }
 
+    const filteredMedia = media.filter((item) => {
+        if (!searchQuery) return true;
+        const lowerCaseQuery = searchQuery.toLowerCase();
+        
+        return (
+            item.name?.toLowerCase().includes(lowerCaseQuery) ||
+            item.description?.toLowerCase().includes(lowerCaseQuery) ||
+            item.Creators?.creator?.toLowerCase().includes(lowerCaseQuery)
+        );
+    });
+
     return (
         <div className="flex flex-col gap-6">
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4 bg-base-200 p-4 rounded-box shadow-sm">
@@ -118,6 +130,10 @@ export default function Home() {
                     placeholder="Search media..."
                 />
                 <button className="btn btn-neutral btn-outline">Filters</button>
+        <>
+            <div className="list-header">
+                <input type="text" className="search-bar" style={{ maxWidth: '400px' }} placeholder="search" value={searchQuery}onChange={(e) => setSearchQuery(e.target.value)}/>
+                <button className="btn-filter">Filters</button>
             </div>
 
             <div className="flex flex-col gap-4">
@@ -141,6 +157,11 @@ export default function Home() {
                 )}
 
                 {!isLoading && !errorMessage && media.map((item) => {
+                {!isLoading && !errorMessage && filteredMedia.length === 0 && (
+                    <p>No media found.</p>
+                )}
+
+                {filteredMedia.map((item) => {
                     const relationships = mediaWithRelationships[item.id] || [];
 
                     return (
