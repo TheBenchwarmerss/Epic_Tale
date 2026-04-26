@@ -9,7 +9,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        logo: ['Georgia', '"Times New Roman"', 'serif'],
+        logo: ["Pirata One"],
         main: ['system-ui', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'sans-serif'],
       }
     },

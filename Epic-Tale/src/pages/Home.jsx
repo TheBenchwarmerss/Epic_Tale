@@ -128,12 +128,10 @@ export default function Home() {
                     type="text"
                     className="input input-bordered w-full sm:max-w-md bg-base-100"
                     placeholder="Search media..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
                 />
-                <button className="btn btn-neutral btn-outline">Filters</button>
-        <>
-            <div className="list-header">
-                <input type="text" className="search-bar" style={{ maxWidth: '400px' }} placeholder="search" value={searchQuery}onChange={(e) => setSearchQuery(e.target.value)}/>
-                <button className="btn-filter">Filters</button>
+                {/* <button className="btn btn-neutral btn-outline">Filters</button> */}
             </div>
 
             <div className="flex flex-col gap-4">
@@ -142,6 +140,7 @@ export default function Home() {
                         <span className="loading loading-spinner loading-lg text-primary"></span>
                     </div>
                 )}
+
                 {errorMessage && (
                     <div className="alert alert-error shadow-lg">
                         <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -156,12 +155,13 @@ export default function Home() {
                     </div>
                 )}
 
-                {!isLoading && !errorMessage && media.map((item) => {
-                {!isLoading && !errorMessage && filteredMedia.length === 0 && (
-                    <p>No media found.</p>
+                {!isLoading && !errorMessage && media.length > 0 && filteredMedia.length === 0 && (
+                    <div className="text-center p-8 bg-base-200 rounded-box text-base-content/60">
+                        <p className="text-lg">No media found for that search.</p>
+                    </div>
                 )}
 
-                {filteredMedia.map((item) => {
+                {!isLoading && !errorMessage && filteredMedia.map((item) => {
                     const relationships = mediaWithRelationships[item.id] || [];
 
                     return (

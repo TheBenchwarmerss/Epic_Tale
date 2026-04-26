@@ -165,28 +165,7 @@ export default function MediaDetail() {
         <div className="flex flex-col gap-8 max-w-5xl mx-auto py-4">
             <div className="card md:card-side bg-base-200 shadow-xl overflow-hidden">
                 <figure className="w-full md:w-1/3 bg-base-300 flex items-center justify-center p-16 md:p-0 min-h-[350px] border-b md:border-b-0 md:border-r border-base-content/10">
-                    <div className="text-center opacity-50 flex flex-col items-center gap-2">
-                        <span className="text-6xl font-light">?</span>
-                        <span className="font-medium tracking-wide uppercase text-sm">Cover Pending</span>
-                    </div>
-                </figure>
-                <div className="card-body md:w-2/3 p-6 md:p-8 flex flex-col justify-center">
-                    <h1 className="card-title text-3xl md:text-4xl font-bold mb-2">{mediaDetails.name}</h1>
-                    <div className="flex flex-wrap gap-2 mb-6">
-                        <span className="badge badge-primary">{mediaDetails.types?.type}</span>
-                        <span className="badge badge-outline">{mediaDetails.Creators?.creator}</span>
-                    </div>
-                    <p className="text-lg opacity-90 leading-relaxed mb-6">{mediaDetails.description}</p>
-                    
-                    <div className="card-actions justify-end mt-auto pt-4 border-t border-base-content/10">
-                        <button onClick={handleDeleteMedia} className="btn btn-error btn-outline hover:bg-error hover:text-error-content transition-colors shadow-sm">
-                           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                           Delete Item
-                        </button>
-                    </div>
-        <div className="detail-container">
-            <div className="detail-top">
-                <div className="cover-photo-container">
+                    <div className="cover-photo-container">
                     {mediaDetails.image_url ? (
                         <img 
                             src={mediaDetails.image_url} 
@@ -200,14 +179,23 @@ export default function MediaDetail() {
                         </div>
                     )}
                 </div>
-                <div className="detail-info">
-                    <h1>{mediaDetails.name}</h1>
-                    <p className="series">Type: {mediaDetails.types?.type}</p>
-                    <p className="series">Creator: {mediaDetails.Creators?.creator}</p>
-                    <p>{mediaDetails.description}</p>
+                </figure>
+                <div className="card-body md:w-2/3 p-6 md:p-8 flex flex-col justify-center">
+                    <h1 className="card-title text-3xl md:text-4xl font-bold mb-2">{mediaDetails.name}</h1>
+                    <div className="flex flex-wrap gap-2 mb-6">
+                        <span className="badge badge-primary">{mediaDetails.types?.type}</span>
+                        <span className="badge badge-outline">{mediaDetails.Creators?.creator}</span>
+                    </div>
+                    <p className="text-lg opacity-90 leading-relaxed mb-6">{mediaDetails.description}</p>
                 </div>
-            </div>
-
+                    <div className="card-actions justify-end mt-auto pt-4 border-t border-base-content/10">
+                        <button onClick={handleDeleteMedia} className="btn btn-error btn-outline hover:bg-error hover:text-error-content transition-colors shadow-sm">
+                           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                           Delete Item
+                        </button>
+                    </div>
+                </div>
+        <div className="detail-container">
             {relationships.length > 0 && (
                 <div className="bg-base-200/50 p-6 rounded-box shadow-inner">
                     <h2 className="text-2xl font-bold mb-4 px-2">Relationships</h2>
@@ -219,6 +207,7 @@ export default function MediaDetail() {
                     />
                 </div>
             )}
+        </div>
         </div>
     );
 }

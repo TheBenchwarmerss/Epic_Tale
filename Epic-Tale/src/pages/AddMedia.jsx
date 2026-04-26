@@ -14,8 +14,12 @@ export default function AddMedia() {
                 .from('types')
                 .select('id, type')
                 .order('type', { ascending: true })
-            if (!error) setTypes(data)
+
+            if (!error) {
+                setTypes(data)
+            }
         }
+
         getTypes()
     }, [])
 
@@ -30,6 +34,7 @@ export default function AddMedia() {
         setSuccessMessage('')
 
         let authorId = null
+
         const { data: existingCreators, error: lookupError } = await supabase
             .from('Creators')
             .select('id')
@@ -56,12 +61,21 @@ export default function AddMedia() {
                 setIsSubmitting(false)
                 return
             }
+
             authorId = newCreator.id
         }
 
         const { error: mediaError } = await supabase
             .from('media')
-            .insert([{ name: form.name, description: form.description, creator_id: authorId, type_id: form.type_id, image_url: form.image_url }])
+            .insert([
+                {
+                    name: form.name,
+                    description: form.description,
+                    creator_id: authorId,
+                    type_id: form.type_id,
+                    image_url: form.image_url,
+                },
+            ])
 
         if (mediaError) {
             setErrorMessage(mediaError.message)
@@ -69,37 +83,31 @@ export default function AddMedia() {
             setSuccessMessage('Media added successfully!')
             setForm({ name: '', description: '', author: '', type_id: '', image_url: '' })
         }
+
         setIsSubmitting(false)
     }
 
     return (
         <div className="max-w-5xl mx-auto py-4">
             <form onSubmit={handleSubmit} className="card md:card-side bg-base-200 shadow-xl overflow-hidden">
-                <figure className="w-full md:w-1/3 bg-base-300 flex items-center justify-center p-16 md:p-0 min-h-[350px] cursor-pointer hover:bg-base-300/80 transition-colors border-b md:border-b-0 md:border-r border-base-content/10">
-                    <div className="text-center opacity-50 flex flex-col items-center gap-2">
-                        <span className="text-6xl font-light">+</span>
-                        <span className="font-medium tracking-wide uppercase text-sm">Add Cover Photo</span>
-        <div className="detail-container">
-            <form onSubmit={handleSubmit}>
-                <div className="detail-top">
-                    <div className="cover-photo-container">
-                        {form.image_url ? (
-                            <img 
-                                src={form.image_url} 
-                                alt="Cover preview" 
-                                style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} 
-                            />
-                        ) : (
-                            <div className="placeholder-cover">
-                                <h2>+</h2>
-                                <div>Add Cover Photo</div>
-                            </div>
-                        )}
-                    </div>
+                <figure className="w-full md:w-1/3 bg-base-300 flex items-center justify-center p-16 md:p-0 min-h-[350px] border-b md:border-b-0 md:border-r border-base-content/10">
+                    {form.image_url ? (
+                        <img
+                            src={form.image_url}
+                            alt="Cover preview"
+                            className="w-full h-full object-cover"
+                        />
+                    ) : (
+                        <div className="text-center opacity-50 flex flex-col items-center gap-2">
+                            <span className="text-6xl font-light">+</span>
+                            <span className="font-medium tracking-wide uppercase text-sm">Add Cover Photo</span>
+                        </div>
+                    )}
                 </figure>
+
                 <div className="card-body md:w-2/3 p-6 md:p-8">
                     <h2 className="card-title text-2xl mb-6 font-bold">Add New Media</h2>
-                    
+
                     <div className="form-control w-full mb-4">
                         <input
                             name="name"
@@ -111,7 +119,7 @@ export default function AddMedia() {
                             required
                         />
                     </div>
-                    
+
                     <div className="form-control w-full mb-4">
                         <textarea
                             name="description"
@@ -122,7 +130,7 @@ export default function AddMedia() {
                             required
                         />
                     </div>
-                    
+
                     <div className="form-control w-full mb-4">
                         <input
                             name="author"
@@ -134,7 +142,18 @@ export default function AddMedia() {
                             required
                         />
                     </div>
-                    
+
+                    <div className="form-control w-full mb-4">
+                        <input
+                            name="image_url"
+                            type="url"
+                            className="input input-bordered w-full bg-base-100 focus:input-primary"
+                            placeholder="Image URL..."
+                            value={form.image_url}
+                            onChange={handleChange}
+                        />
+                    </div>
+
                     <div className="form-control w-full mb-6">
                         <select
                             name="type_id"
@@ -156,41 +175,18 @@ export default function AddMedia() {
                             <span>{errorMessage}</span>
                         </div>
                     )}
+
                     {successMessage && (
                         <div className="alert alert-success shadow-sm mb-4">
                             <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                             <span>{successMessage}</span>
-                        <div className="input-group">
-                            <input
-                                name="image_url"
-                                type="text"
-                                className="input-text"
-                                placeholder="Image URL..."
-                                value={form.image_url}
-                                onChange={handleChange}
-                            />
-                        </div>
-                        <div className="input-group">
-                            <select
-                                name="type_id"
-                                className="input-text"
-                                style={{ background: 'var(--bg-card)' }}
-                                value={form.type_id}
-                                onChange={handleChange}
-                                required
-                            >
-                                <option value="">Select a type...</option>
-                                {types.map((t) => (
-                                    <option key={t.id} value={t.id}>{t.type}</option>
-                                ))}
-                            </select>
                         </div>
                     )}
 
                     <div className="card-actions justify-end mt-auto pt-4">
-                        <button 
-                            type="submit" 
-                            disabled={isSubmitting} 
+                        <button
+                            type="submit"
+                            disabled={isSubmitting}
                             className="btn btn-primary w-full sm:w-auto px-8"
                         >
                             {isSubmitting ? (
